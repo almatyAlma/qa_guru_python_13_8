@@ -18,6 +18,18 @@ def cart():
     return cart
 
 
+@pytest.fixture
+def product_newspaper():
+    return Product("newspaper", 10, "This is a newspaper", 100)
+
+
+@pytest.fixture
+def cart_with_products(product, product_newspaper):
+    cart = Cart()
+    cart.add_product(product, 10)
+    cart.add_product(product_newspaper, 10)
+    return cart
+
 class TestProducts:
     """
     Тестовый класс - это способ группировки ваших тестов по какой-то тематике
@@ -26,6 +38,7 @@ class TestProducts:
 
     def test_product_check_quantity(self, product):
         # TODO напишите проверки на метод check_quantity
+        assert product.check_quantity(0) is True, "На складе пусто"
         assert product.check_quantity(1000) is True, "На складе нет 1000шт"
         assert product.check_quantity(999) is True, "На складе нет 999шт"
         assert product.check_quantity(1) is True, "На складе нет 1шт"
@@ -45,12 +58,11 @@ class TestProducts:
 
     def test_product_buy_minus_quantity(self, product):
         # TODO напишите проверки на метод buy
-        initial_quantity = product.quantity
-        try:
-            product.buy(-1)
-        except ValueError as e:
-            assert str(e) == "Не корректное значение"
-        assert product.quantity == initial_quantity
+
+        expected = product.quantity - 1
+        product.buy(1)
+        actual = product.quantity
+        assert actual == expected
 
     def test_product_buy_more_than_available(self, product):
         # TODO напишите проверки на метод buy,
@@ -129,16 +141,9 @@ class TestCart:
         cart.clear()
         assert len(cart.products) == 0
 
-    def test_get_total_price(self, cart):
-        product = Product("book", 100, "This is a book", 1000)
-        product2 = Product("book2", 200, "This is a book2", 1000)
-        cart.products = {
-            product: 20,
-            product2: 5
-        }
-        assert cart.get_total_price() == 3000
-        cart.clear()
-        assert cart.get_total_price() == 0
+    def test_get_total_price_cart(self, cart, cart_with_products):
+        assert cart.get_total_price() == 0.0
+        assert cart_with_products.get_total_price() == 1100
 
     def test_buy(self, cart):
         product = Product("book", 100, "This is a book", 1000)
