@@ -25,6 +25,7 @@ class Product:
         else:
             raise ValueError("Не корректное значение")
 
+
     def buy(self, quantity):
         """
         TODO реализуйте метод покупки
