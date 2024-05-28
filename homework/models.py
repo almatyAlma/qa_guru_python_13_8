@@ -18,13 +18,7 @@ class Product:
         TODO Верните True если количество продукта больше или равно запрашиваемому
             и False в обратном случае
         """
-        if self.quantity >= quantity >= 0:
-            return True
-        elif self.quantity < quantity:
-            return False
-        else:
-            raise ValueError("Не корректное значение")
-
+        return self.quantity >= quantity
 
     def buy(self, quantity):
         """
@@ -35,10 +29,7 @@ class Product:
         if self.check_quantity(quantity):
             print("Продукты в достаточном количестве")
             self.quantity = self.quantity - quantity
-        elif not self.check_quantity(quantity):
-            raise ValueError("Не хватает продуктов")
-        else:
-            raise NotImplementedError
+        else raise ValueError("Не хватает продуктов")
 
     def __hash__(self):
         return hash(self.name + self.description)
@@ -64,10 +55,8 @@ class Cart:
         """
         if product in self.products:
             self.products[product] += buy_count
-        elif product not in self.products:
+       else:
             self.products[product] = buy_count
-        else:
-            raise NotImplementedError
 
     def remove_product(self, product: Product, remove_count=None):
         """
